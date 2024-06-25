@@ -18,7 +18,7 @@ const slice = createSlice({
     },
   },
   selectors: {
-    selectContacts: (state) => state.contacts,
+    selectContacts: (state) => state.contacts.items,
   },
 });
 
