@@ -5,46 +5,28 @@ import ContactForm from "./ContactForm/ContactForm";
 import initialContacts from "../data/contacts.json";
 import {useLocalStorage} from "./hook/useLocalStorage";
 import Notification from "./Notification/Notification";
-import css from "./App.module.css"
+import css from "./App.module.css";
+import {useSelector} from "react-redux";
+import {selectContacts} from "../redux/contactsSlice";
+import {selectNameFilter} from "../redux/filtersSlice";
 
 function App() {
-  const [contacts, setContacts] = useLocalStorage(
-    "contact",
-    initialContacts
-  );
-
-  const [searchContact, setSearchContacts] = useState("");
+  const contacts = useSelector(selectContacts);
+  const filter = useSelector(selectNameFilter);
 
   const filteredContacts = contacts.filter((contact) =>
-    contact.name
-      .toLowerCase()
-      .includes(searchContact.toLowerCase())
+    contact.name.toLowerCase().includes(searchContact.toLowerCase())
   );
-
-  const handleAddContact = (newContact) =>
-    setContacts((prev) => [...prev, newContact]);
-
-  const handleDeleteContact = (id) => {
-    setContacts((prev) =>
-      prev.filter((item) => item.id !== id)
-    );
-  };
 
   return (
     <div>
       <h1 className={css.title}>Phonebook</h1>
-      <ContactForm onAdd={handleAddContact} />
-      <SearchBox
-        searchValue={searchContact}
-        onSearchValue={setSearchContacts}
-      />
+      <ContactForm />
+      <SearchBox />
       {filteredContacts.length !== 0 ? (
-        <ContactList
-          users={filteredContacts}
-          deleteContact={handleDeleteContact}
-        />
+        <ContactList users={filteredContacts} />
       ) : (
-        <Notification />
+        <Notification text={`No contact found with the name ${filter}`} />
       )}
     </div>
   );

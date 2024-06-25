@@ -1,6 +1,6 @@
 import css from "./Notification.module.css";
 
-export const Notification = () => {
-  return <p className={css.notice}>Not contacts yet</p>;
+export const Notification = ({text}) => {
+  return <p className={css.notice}>{text}</p>;
 };
 export default Notification;
