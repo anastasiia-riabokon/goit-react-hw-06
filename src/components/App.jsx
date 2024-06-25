@@ -1,9 +1,6 @@
-import {useState} from "react";
 import ContactList from "./ContactList/ContactList";
 import SearchBox from "./SearchBox/SearchBox";
 import ContactForm from "./ContactForm/ContactForm";
-import initialContacts from "../data/contacts.json";
-import {useLocalStorage} from "./hook/useLocalStorage";
 import Notification from "./Notification/Notification";
 import css from "./App.module.css";
 import {useSelector} from "react-redux";
@@ -15,7 +12,7 @@ function App() {
   const filter = useSelector(selectNameFilter);
 
   const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(searchContact.toLowerCase())
+    contact.name.toLowerCase().includes(filter.toLowerCase())
   );
 
   return (
