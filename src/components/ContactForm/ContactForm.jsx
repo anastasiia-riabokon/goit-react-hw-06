@@ -3,8 +3,11 @@ import css from "./ContactForm.module.css";
 import * as Yup from "yup";
 import ReactInputMask from "react-input-mask";
 import {useId} from "react";
+import {useDispatch} from "react-redux";
+import {addContact} from "../../redux/contactsSlice";
 
-export const ContactForm = ({onAdd}) => {
+export const ContactForm = () => {
+  const dispatch = useDispatch();
   const idFieldName = useId();
   const idFieldNumber = useId();
 
@@ -14,11 +17,14 @@ export const ContactForm = ({onAdd}) => {
   };
 
   const handleSubmit = (values, actions) => {
-    onAdd({
+    const action = addContact({
       id: crypto.randomUUID(),
       name: values.nameContact,
       number: values.numberContact,
     });
+
+    dispatch(action);
+
     actions.resetForm();
   };
 
@@ -26,21 +32,14 @@ export const ContactForm = ({onAdd}) => {
     nameContact: Yup.string()
       .min(3, "Too short!")
       .max(50, "Too long!")
-      .matches(
-        /^[A-Za-z]+$/,
-        "Name must consist only of letters!"
-      )
+      .matches(/^[A-Za-z]+$/, "Name must consist only of letters!")
       .required("Required"),
 
     numberContact: Yup.string().required("Required"),
   });
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      validationSchema={FeedbackSchema}
-    >
+    <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={FeedbackSchema}>
       {({setFieldValue}) => (
         <Form className={css.form}>
           <h2 className={css.title}>Add Contact</h2>
@@ -53,21 +52,12 @@ export const ContactForm = ({onAdd}) => {
               className={css.field}
               placeholder="John"
             />
-            <ErrorMessage
-              name="nameContact"
-              component="div"
-              className={css.message__error}
-            />
+            <ErrorMessage name="nameContact" component="div" className={css.message__error} />
           </label>
 
           <label htmlFor="{idFieldNumber}">
             <span className={css.label}>Number</span>
-            <Field
-              id={idFieldNumber}
-              type="text"
-              name="numberContact"
-              placeholder="123-45-67"
-            >
+            <Field id={idFieldNumber} type="text" name="numberContact" placeholder="123-45-67">
               {({field}) => (
                 <ReactInputMask
                   {...field}
@@ -75,20 +65,11 @@ export const ContactForm = ({onAdd}) => {
                   mask="999-99-99"
                   maskChar="_"
                   placeholder="___-__-__"
-                  onChange={(e) =>
-                    setFieldValue(
-                      "numberContact",
-                      e.target.value
-                    )
-                  }
+                  onChange={(e) => setFieldValue("numberContact", e.target.value)}
                 />
               )}
             </Field>
-            <ErrorMessage
-              name="numberContact"
-              component="div"
-              className={css.message__error}
-            />
+            <ErrorMessage name="numberContact" component="div" className={css.message__error} />
           </label>
 
           <button className={css.btn} type="submit">
